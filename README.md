@@ -10,6 +10,7 @@ The Firecrawl Coral Agent is an open-source agent designed for comprehensive web
 - **Tools used**: Firecrawl MCP Server Tools, Coral Server Tools
 - **AI model**: OpenAI GPT-4o
 - **Date added**: June 4, 2025
+- **Reference**: [Firecrawl MCP GitHub](https://github.com/mendableai/firecrawl)
 - **License**: MIT
 
 ### Clone & Install Dependencies
@@ -59,7 +60,7 @@ The Model Context Protocol (MCP) is an innovative open-source standard designed 
 ```
 
 ### Creator Details
-- **Name**: Suman
+- **Name**: Suman Deb
 - **Affiliation**: Coral Protocol
 - **Contact**: [Discord](https://discord.com/invite/Xjm892dtt3)
-- **Link**: [Firecrawl MCP GitHub](https://github.com/mendableai/firecrawl)
+
