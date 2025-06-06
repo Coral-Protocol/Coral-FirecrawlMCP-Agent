@@ -8,7 +8,7 @@ The Firecrawl Coral Agent is an open-source agent designed for comprehensive web
 ### Details
 - **Framework**: LangChain
 - **Tools used**: Firecrawl MCP Server Tools, Coral Server Tools
-- **AI model**: OpenAI GPT-4
+- **AI model**: OpenAI GPT-4o
 - **Date added**: June 4, 2025
 - **License**: MIT
 
