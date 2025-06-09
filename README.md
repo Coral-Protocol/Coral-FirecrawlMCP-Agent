@@ -31,7 +31,7 @@ cd coral-server
 ```
 Run the server
 ```bash
-cd ./gradlew run
+./gradlew run
 ```
 </details>
 
