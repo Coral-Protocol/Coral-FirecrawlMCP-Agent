@@ -71,6 +71,7 @@ Check if the .env file has correct URL for Coral Server and adjust the parameter
 # Run the agent using `uv`:
 uv run python firecrawl_coral_agent.py
 ```
+</details>
 
 ### 4. Example
 
