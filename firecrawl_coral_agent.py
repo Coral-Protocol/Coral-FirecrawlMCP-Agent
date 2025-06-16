@@ -61,36 +61,45 @@ async def create_agent(coral_tools, agent_tools):
     return AgentExecutor(agent=agent, tools=combined_tools, verbose=True)
 
 async def main():
-	CORAL_SERVER_URL = f"{coral_base_url}?{query_string}"
-	print(CORAL_SERVER_URL)
-	async with MultiServerMCPClient(
-		connections = {
-			"coral": {
-				"transport": "sse",
-				"url": CORAL_SERVER_URL,
-				"timeout": 300,
-				"sse_read_timeout": 300
-			},
-			"firecrawl-mcp": {"command": 'npx', "args": ['-y', 'firecrawl-mcp'], "env": {"FIRECRAWL_API_KEY": os.getenv("FIRECRAWL_API_KEY")}}
-		}
-    ) as multi_connection_client:
-			print("Multi Server Connection Established")
-			agent_tools = multi_connection_client.server_name_to_tools['firecrawl-mcp']
-			coral_tools = multi_connection_client.server_name_to_tools['coral']
-			print(f"Coral tools count: {len(coral_tools)} and agent tools count: {len(agent_tools)}")
-			
-			agent_executor = await create_agent(coral_tools, agent_tools)
-			
-			while True:
-				try:
-					print("Starting new agent invocation")
-					await agent_executor.ainvoke({"agent_scratchpad": []})
-					print("Completed agent invocation, restarting loop")
-					await asyncio.sleep(1)
-				except Exception as e:
-					print(f"Error in agent loop: {str(e)}")
-					print(traceback.format_exc())
-					await asyncio.sleep(5)
+    CORAL_SERVER_URL = f"{coral_base_url}?{query_string}"
+    print(CORAL_SERVER_URL)
+
+    client = MultiServerMCPClient(
+        connections={
+            "coral": {
+                "transport": "sse",
+                "url": CORAL_SERVER_URL,
+                "timeout": 300,
+                "sse_read_timeout": 300,
+            },
+            "firecrawl-mcp": {
+                "transport": "stdio",
+                "command": "npx",
+                "args": ["-y", "firecrawl-mcp"],
+                "env": {"FIRECRAWL_API_KEY": os.getenv("FIRECRAWL_API_KEY")},
+            },
+        }
+    )
+
+    print("Multi Server Connection Established")
+
+    coral_tools = await client.get_tools(server_name="coral")
+    agent_tools = await client.get_tools(server_name="firecrawl-mcp")
+
+    print(f"Coral tools count: {len(coral_tools)} and agent tools count: {len(agent_tools)}")
+
+    agent_executor = await create_agent(coral_tools, agent_tools)
+
+    while True:
+        try:
+            print("Starting new agent invocation")
+            await agent_executor.ainvoke({"agent_scratchpad": []})
+            print("Completed agent invocation, restarting loop")
+            await asyncio.sleep(1)
+        except Exception as e:
+            print(f"Error in agent loop: {str(e)}")
+            print(traceback.format_exc())
+            await asyncio.sleep(5)
 
 if __name__ == "__main__":
     asyncio.run(main())
