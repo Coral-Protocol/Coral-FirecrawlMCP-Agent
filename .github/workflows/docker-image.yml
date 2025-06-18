@@ -24,6 +24,15 @@ jobs:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
+      - name: Check if Docker username is set
+        run: |
+          if [ -z "${{ secrets.DOCKER_USERNAME }}" ]; then
+            echo "ERROR: DOCKER_USERNAME secret is not set."
+            exit 1
+          else
+            echo "DOCKER_USERNAME is set."
+          fi
+
       - name: Build and push Docker image
         uses: docker/build-push-action@v4
         with:
@@ -31,4 +40,4 @@ jobs:
           file: ./Dockerfile
           push: true
           platforms: linux/amd64,linux/arm64
-          tags: ${{ secrets.DOCKER_USERNAME }}/coral-firecrawl-agent:latest
+          tags: ${{ secrets.DOCKER_USERNAME }}/firecrawl-coral-agent:latest
