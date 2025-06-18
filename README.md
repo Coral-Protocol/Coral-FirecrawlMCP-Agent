@@ -3,7 +3,7 @@
 The Firecrawl Coral Agent is an open-source agent built to perform advanced web scraping, crawling, and data extraction operations.
 
 ## Responsibility
-The Firecrawl Coral Agent is an open-source agent designed for comprehensive web scraping, crawling, and data extraction tasks. It excels in structured data extraction and deep research by leveraging a multi-agent architecture to efficiently navigate, search, and analyze web content
+The Firecrawl Coral Agent is an open-source agent designed for comprehensive web scraping, crawling, and data extraction tasks. It excels in structured data extraction and deep research by leveraging a multi-agent architecture to efficiently navigate, search, and analyze web content.
 
 
 ## Details
