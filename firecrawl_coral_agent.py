@@ -8,9 +8,11 @@ from langchain.agents import create_tool_calling_agent, AgentExecutor
 
 load_dotenv()
 
-coral_base_url = os.getenv('coral_base_url')
+base_url = os.getenv("CORAL_SSE_URL")
+agentID = os.getenv("CORAL_AGENT_ID")
+
 coral_params = {
-    "waitForAgents": 1,
+    # "waitForAgents": 1,
     "agentId": "firecrawl",
     "agentDescription": "You are a firecrawl agent capable of performing comprehensive web scraping, crawling, and data extraction tasks, including structured data extraction and deep research, by utilizing a variety of tools to navigate, search, and analyze web content efficiently."
 }
@@ -51,8 +53,8 @@ async def create_agent(coral_tools, agent_tools):
     ])
 
     model = init_chat_model(
-            model=os.getenv('llm_model_name'),
-            model_provider=os.getenv('llm_model_provider'),
+            model='gpt-4o',
+            model_provider='openai',
             api_key=os.getenv("OPENAI_API_KEY"),
             temperature=0.3,
             max_tokens=16000
