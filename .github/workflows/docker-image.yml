@@ -40,4 +40,4 @@ jobs:
           file: ./Dockerfile
           push: true
           platforms: linux/amd64,linux/arm64
-          tags: ${{ secrets.DOCKER_USERNAME }}/firecrawl-coral-agent:latest
+          tags: ${{ secrets.DOCKER_USERNAME }}/coral-firecrawl-agent:latest
