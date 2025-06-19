@@ -13,7 +13,7 @@ agentID = os.getenv("CORAL_AGENT_ID")
 
 coral_params = {
     # "waitForAgents": 1,
-    "agentId": "firecrawl",
+    "agentId": agentID,
     "agentDescription": "You are a firecrawl agent capable of performing comprehensive web scraping, crawling, and data extraction tasks, including structured data extraction and deep research, by utilizing a variety of tools to navigate, search, and analyze web content efficiently."
 }
 
