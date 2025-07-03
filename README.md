@@ -98,12 +98,17 @@ registry:
       - name: "API_KEY"
         type: "string"
         description: "API key for the service"
+      - name: "FIRECRAWL_API_KEY"
+        type: "string"
+        description: "FIRECRAWL API KEY for the service"
     runtime:
       type: "executable"
       command: ["bash", "-c", "${PROJECT_DIR}/run_agent.sh main.py"]
       environment:
         - name: "API_KEY"
           from: "API_KEY"
+        - name: "FIRECRAWL_API_KEY"
+          from: "FIRECRAWL_API_KEY"
         - name: "MODEL_NAME"
           value: "gpt-4.1"
         - name: "MODEL_PROVIDER"
