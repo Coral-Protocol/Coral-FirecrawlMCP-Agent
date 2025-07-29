@@ -43,7 +43,7 @@ async def create_agent(coral_tools, agent_tools):
     model = init_chat_model(
         model=os.getenv("MODEL_NAME", "gpt-4.1"),
         model_provider=os.getenv("MODEL_PROVIDER", "openai"),
-        api_key=os.getenv("API_KEY"),
+        api_key=os.getenv("MODEL_API_KEY"),
         temperature=os.getenv("MODEL_TEMPERATURE", "0.1"),
         max_tokens=os.getenv("MODEL_TOKEN", "8000")
     )
