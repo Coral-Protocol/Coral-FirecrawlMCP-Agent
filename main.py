@@ -72,13 +72,14 @@ async def main():
     CORAL_SERVER_URL = f"{base_url}?{query_string}"
     print(f"Connecting to Coral Server: {CORAL_SERVER_URL}")
 
+    timeout = os.getenv("TIMEOUT_MS", 300)
     client = MultiServerMCPClient(
         connections={
             "coral": {
                 "transport": "sse",
                 "url": CORAL_SERVER_URL,
-                "timeout": 300,
-                "sse_read_timeout": 300,
+                "timeout": timeout,
+                "sse_read_timeout": timeout,
             },
             "firecrawl-mcp": {
                 "transport": "stdio",
