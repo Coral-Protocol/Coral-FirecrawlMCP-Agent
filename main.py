@@ -45,7 +45,7 @@ async def create_agent(coral_tools, agent_tools):
         model_provider=os.getenv("MODEL_PROVIDER", "openai"),
         api_key=os.getenv("MODEL_API_KEY"),
         temperature=os.getenv("MODEL_TEMPERATURE", "0.1"),
-        max_tokens=os.getenv("MODEL_TOKEN", "8000")
+        max_tokens=os.getenv("MODEL_TOKEN_LIMIT", "8000")
     )
     agent = create_tool_calling_agent(model, combined_tools, prompt)
     return AgentExecutor(agent=agent, tools=combined_tools, verbose=True, handle_parsing_errors=True)
