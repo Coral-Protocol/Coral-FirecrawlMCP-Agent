@@ -1,6 +1,6 @@
 [agent]
-name = "test-agent"
-version = "0.1.0"
+name = "firecawl-agent"
+version = "0.2.0"
 description = "This agent possesses powerful web scraping and data extraction tools. It can efficiently scrape content from individual pages, discover URLs, search the web, and extract structured information from various web pages. It reliably provides web mapping, web searching, crawl management, and structured data extraction capabilities."
 
 [options]
