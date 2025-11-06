@@ -28,11 +28,15 @@ logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
 logger.addHandler(RichHandler(rich_tracebacks=True))
 
+USD_PER_TOKEN = 0.000001
 
 class InMemoryHistory:
     """In memory implementation of chat message history."""
 
-    messages: list[BaseMessage] = []
+    messages: list[BaseMessage]
+
+    def __init__(self):
+        self.messages = []
 
     def add_messages(self, messages: Sequence[BaseMessage]) -> None:
         """Add a list of messages to the store"""
@@ -46,7 +50,7 @@ class InMemoryHistory:
 
 
 async def fetch_tools(
-    client: MultiServerMCPClient, coral_session: ClientSession
+        client: MultiServerMCPClient, coral_session: ClientSession
 ) -> list[BaseTool]:
     """Helper to fetch all MCP tools from all servers, while reusing an already opened ClientSession for the Coral MCP server"""
     try:
@@ -62,8 +66,8 @@ async def fetch_tools(
             other_tools.extend(await client.get_tools(server_name=server))
         logger.info(f"Found {len(other_tools)} non-coral tools.")
         return coral_tools + other_tools
-    except:
-        logger.exception("Failed to get MCP tools")
+    except Exception as e:
+        logger.exception("Failed to get MCP tools: %s", repr(e))
         sys.exit(1)
 
 
@@ -89,13 +93,18 @@ async def main():
     MODEL_API_KEY = asserted_env("MODEL_API_KEY")
     MODEL_BASE_URL = getenv("MODEL_BASE_URL")
 
+    if MODEL_BASE_URL and MODEL_BASE_URL.upper() != "UNMODIFIED":
+        kwargs = {"base_url": MODEL_BASE_URL}
+    else:
+        kwargs = {}
+
     TEMPERATURE = float(asserted_env("MODEL_TEMPERATURE"))
     MAX_TOKENS = int(float(asserted_env("MODEL_MAX_TOKENS")))
 
     MAX_ITERATIONS = int(float(asserted_env("MAX_ITERATIONS")))
 
     global claim_handler  # This is global so tools can use it easily
-    claim_handler = ClaimHandler("micro_coral")
+    claim_handler = ClaimHandler("usd")
 
     prompt = ChatPromptTemplate.from_messages(
         [
@@ -109,10 +118,10 @@ async def main():
     model = init_chat_model(
         model=MODEL_NAME,
         model_provider=MODEL_PROVIDER,
-        base_url=MODEL_BASE_URL,
         api_key=MODEL_API_KEY,
         temperature=TEMPERATURE,
         max_tokens=MAX_TOKENS,
+        **kwargs
     )
 
     client = MultiServerMCPClient(
@@ -157,7 +166,9 @@ async def main():
 
             logger.info("Making completion request...")
             step_result: BaseMessage = await chain.ainvoke(
-                {  # We pass in our loaded resources here (as_string is safe here because we know these resources always return text)
+                {
+                    # We pass in our loaded resources here
+                    # (as_string is safe here because we know these resources always return text)
                     "coral_instruction": [
                         SystemMessage(content=coral_instruction.as_string())
                     ],
@@ -169,11 +180,27 @@ async def main():
                 }
             )
 
+            # Claim cost per tokens used each step
+            total_to_claim = 0.0
+            total_tokens = 0
+            try:
+                total_tokens = step_result.model_dump().get("response_metadata").get("token_usage").get("total_tokens")
+                total_to_claim = total_tokens * USD_PER_TOKEN
+                logger.info(f"Total to claim for step: ${total_to_claim:.6f}")
+            except AttributeError:
+                total_to_claim = 0.0
+                total_tokens = 0
+                logger.warning("No response_metadata.token_usage.total_tokens"
+                               " found on step result. Can't calculate token cost.")
+            if total_to_claim > 0.0:
+                claim_handler.claim(total_to_claim)
+                logger.info(f"Claimed cost for step: ${total_to_claim:.6f} for {total_tokens} tokens")
+
             logger.info("-> '%s'", step_result.content)
 
             history.add_message(step_result)
 
-            if type(step_result) is AIMessage:
+            if isinstance(step_result, AIMessage):
                 tool_calls = step_result.tool_calls
                 for call in tool_calls:
                     history.add_message(await tool_runner.run_tool(call))

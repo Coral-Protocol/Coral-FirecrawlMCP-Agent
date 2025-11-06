@@ -1,5 +1,5 @@
 [project]
-name = "test-agent"
+name = "firecrawl-agent"
 version = "0.1.0"
 description = "Coralized langchain agent"
 readme = "README.md"

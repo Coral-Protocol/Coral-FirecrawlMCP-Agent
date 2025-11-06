@@ -15,7 +15,7 @@ MODEL_API_KEY = { type = "string", required = true, description = "The API key f
 
 MODEL_NAME = { type = "string", default = "gpt-4.1-mini", description = "Name of the model to use. See https://python.langchain.com/api_reference/langchain/chat_models/langchain.chat_models.base.init_chat_model.html for a list of available model names." }
 MODEL_PROVIDER = { type = "string", default = "openai", description = "The model provider to use. See https://python.langchain.com/api_reference/langchain/chat_models/langchain.chat_models.base.init_chat_model.html for a list of available providers." }
-MODEL_BASE_URL = { type = "string", required = false, description = "The base url of the model provider. See https://python.langchain.com/api_reference/langchain/chat_models/langchain.chat_models.base.init_chat_model.html for more info." }
+MODEL_BASE_URL = { type = "string", required = false, default = "UNMODIFIED", description = "The base url of the model provider. See https://python.langchain.com/api_reference/langchain/chat_models/langchain.chat_models.base.init_chat_model.html for more info." }
 
 MODEL_TEMPERATURE = { type = "number", default = 0.2, description = "Model temperature to use." }
 MODEL_MAX_TOKENS = { type = "number", default = 2000, description = "Max output tokens the model can use for one iteration." }
@@ -27,4 +27,4 @@ FIRECRAWL_API_KEY = { type = "string", required = true }
 command = ["uv", "run", "src/main.py"]
 
 [runtimes.docker]
-image = "firecrawlagent"
+image = "firecrawl-agent"
